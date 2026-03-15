@@ -2,8 +2,8 @@
 
 ## 生成随机数
 
-- beta_0 = 1, beta_1 = 2;
-- epsilon, N(0, 1);
+- `beta_0 = 1`, `beta_1 = 2`;
+- `epsilon`, N(0, 1);
 - 生成 100 组。
 
 ## 估计参数
@@ -15,8 +15,8 @@
 ## 方法比较
 
 - 调用 sklearn 和 statsmodels, 比较三种方法的结果；
-- (sklearn)[https://scikit-learn.org/stable/];
-- (statsmodels)[https://www.statsmodels.org/stable/index.html].
+- [sklearn](https://scikit-learn.org/stable/);
+- [statsmodels](https://www.statsmodels.org/stable/index.html).
 
 ## (可选）写出实验报告
 
