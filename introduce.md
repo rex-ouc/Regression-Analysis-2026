@@ -1,1 +1,5 @@
+Name:maxiaotong
+School:OUC
+Major:Statistic
+
 我是李文婧，今年23岁了，目前在中国海洋大学应用统计专业读研一
