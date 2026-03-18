@@ -1,5 +1,14 @@
 # 第二周：一元回归分析
 
+## 配置环境
+
+在`student/<your_file>/src/`中，使用
+```
+uv init # 新建环境
+uv add numpy scikit-learn statsmodels
+```
+然后新建`src/week02`文件夹，在里面写本周作业，*无需提交pr*！
+
 ## 生成随机数
 
 - `beta_0 = 1`, `beta_1 = 2`;
@@ -23,6 +32,3 @@
 - 在`<your_dir>/docs/`写下实验报告；
 - （进阶）在`<your_dir>/src/week02/`下，写出jupyter版本的报告。
 
-## 提交pr
-
-- 讲作业提交到你自己的远端repo，然后对我们的课程repo提出pr。
