@@ -1,0 +1,97 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+
+# ======================
+# 1. Generate data
+# ======================
+
+np.random.seed(42)
+
+beta_0 = 1
+beta_1 = 2
+n = 100
+
+x = np.random.normal(0, 1, n)
+epsilon = np.random.normal(0, 1, n)
+
+y = beta_0 + beta_1 * x + epsilon
+
+
+# ======================
+# 2. Manual OLS estimation
+# ======================
+
+x_mean = np.mean(x)
+y_mean = np.mean(y)
+
+beta_1_hat = np.sum((x - x_mean) * (y - y_mean)) / np.sum((x - x_mean)**2)
+beta_0_hat = y_mean - beta_1_hat * x_mean
+
+print("Manual OLS results:")
+print("beta_0_hat =", beta_0_hat)
+print("beta_1_hat =", beta_1_hat)
+
+
+# ======================
+# 3. Calculate bias
+# ======================
+
+bias_beta0 = beta_0_hat - beta_0
+bias_beta1 = beta_1_hat - beta_1
+
+print("\nBias results:")
+print("bias_beta0 =", bias_beta0)
+print("bias_beta1 =", bias_beta1)
+
+
+# ======================
+# 4. Sklearn estimation
+# ======================
+
+model_sklearn = LinearRegression()
+model_sklearn.fit(x.reshape(-1, 1), y)
+
+print("\nSklearn results:")
+print("beta_0_hat =", model_sklearn.intercept_)
+print("beta_1_hat =", model_sklearn.coef_[0])
+
+
+# ======================
+# 5. Statsmodels estimation
+# ======================
+
+X = sm.add_constant(x)
+
+model_sm = sm.OLS(y, X).fit()
+
+print("\nStatsmodels results:")
+print(model_sm.summary())
+
+
+# ======================
+# 6. Hypothesis testing
+# H0: beta_1 = 0
+# ======================
+
+print("\nHypothesis test for beta_1 = 0:")
+print("p-value =", model_sm.pvalues[1])
+
+
+# ======================
+# 7. Plot regression
+# ======================
+
+
+plt.scatter(x, y)
+
+y_pred = beta_0_hat + beta_1_hat * x
+
+plt.plot(x, y_pred)
+
+plt.title("Simple Linear Regression")
+
+plt.savefig("regression_plot.png")
+
+plt.show()
