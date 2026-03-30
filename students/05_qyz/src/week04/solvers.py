@@ -1,3 +1,5 @@
+# Week 04 Assignment: The Tale of Two Solvers (求解器双城记)
+#Task 1: 打造你自己的求解器引擎 (Custom Solvers)
 """
 Module: solvers
 Purpose: Custom implementation of OLS estimators using OOP principles.
