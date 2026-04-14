@@ -11,7 +11,7 @@ from simulation import loop, analysis
 def main():
     """
     设计逻辑：配置隔离 (Configuration Isolation)
-    
+
     将所有可能变动的超参数全部集中在 main 函数开头。
     如果明天要求做一套 10000 次模拟的新作业，只需要改这里的几个数字，
     而完全不需要去碰 simulation.py 里的任何底层代码。
@@ -22,9 +22,9 @@ def main():
     print("=" * 60)
 
     # ========== 定义控制参数（常量大写表示品味） ==========
-    NUM_SIMULATIONS = 1000      # 模拟次数
-    SAMPLE_SIZE = 100           # 每次抽样的样本量
-    NOISE_STD = 5.0             # 噪音的标准差
+    NUM_SIMULATIONS = 1000  # 模拟次数
+    SAMPLE_SIZE = 100  # 每次抽样的样本量
+    NOISE_STD = 5.0  # 噪音的标准差
 
     # 设定上帝视角的真实参数 [截距, 斜率]
     TRUE_BETA = [3.0, 2.0]
@@ -44,7 +44,7 @@ def main():
         n_simulations=NUM_SIMULATIONS,
         n=SAMPLE_SIZE,
         true_params=TRUE_BETA,
-        noise_std=NOISE_STD
+        noise_std=NOISE_STD,
     )
 
     print(f">>> 循环结束，共完成 {len(results_df)} 次模拟。")
