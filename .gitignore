@@ -21,3 +21,5 @@
 
 # Jupyter Notebook files (recursive)
 **/*.ipynb
+
+**/*.npz
