@@ -12,12 +12,13 @@ class MyLinearRegression:
         self.y_ = None
 
     def fit(self, X, y):
+        """拟合模型"""
         self.n_, self.p_ = X.shape
         self.y_ = y.copy()
-        # 加入截距项
+        # 添加截距列
         self.X_b_ = np.c_[np.ones((self.n_, 1)), X]
         
-        # ✅ 关键修改：使用 lstsq 代替 inv，彻底解决奇异矩阵问题
+        # 使用lstsq解决奇异矩阵问题
         self.beta_hat_ = np.linalg.lstsq(self.X_b_, y, rcond=None)[0]
         
         self.intercept_ = self.beta_hat_[0]
@@ -25,53 +26,53 @@ class MyLinearRegression:
         return self
 
     def predict(self, X):
+        """预测"""
         if self.beta_hat_ is None:
-            raise RuntimeError("模型尚未拟合，请先调用 fit 方法")
+            raise RuntimeError("请先调用fit方法")
         X_b = np.c_[np.ones((X.shape[0], 1)), X]
         return X_b @ self.beta_hat_
 
     def score(self, X, y):
+        """计算R²"""
         y_pred = self.predict(X)
-        y_mean = np.mean(y)
-        ss_total = np.sum((y - y_mean) ** 2)
-        if ss_total < 1e-10:
-            return 1.0 if np.allclose(y, y_pred) else 0.0
         ss_res = np.sum((y - y_pred) ** 2)
-        return 1 - ss_res / ss_total
+        ss_tot = np.sum((y - np.mean(y)) ** 2)
+        if ss_tot == 0:
+            return 1.0
+        return 1 - (ss_res / ss_tot)
 
     def f_test(self, C, d):
         """
-        F检验：检验 H0: C @ beta = d
+        F检验：H0: C @ beta = d
         """
         if self.beta_hat_ is None:
-            raise RuntimeError("模型尚未拟合，请先调用 fit 方法")
+            raise RuntimeError("请先调用fit方法")
         
-        # 无约束模型的残差平方和
-        y_pred_unrestricted = self.X_b_ @ self.beta_hat_
-        rss_unrestricted = np.sum((self.y_ - y_pred_unrestricted) ** 2)
+        # 无约束残差平方和
+        y_pred_unres = self.X_b_ @ self.beta_hat_
+        rss_unres = np.sum((self.y_ - y_pred_unres) ** 2)
         
-        # 计算受限估计（使用伪逆防止奇异）
+        # 求解受限模型
         XTX = self.X_b_.T @ self.X_b_
-        XTX_inv = np.linalg.pinv(XTX)
+        XTX_inv = np.linalg.pinv(XTX)  # 使用伪逆
         
-        # 求解受限参数
         try:
-            C_XTX_inv = C @ XTX_inv
-            temp = C_XTX_inv @ C.T
+            
+            temp = C @ XTX_inv @ C.T
             temp_inv = np.linalg.inv(temp)
             lambda_ = temp_inv @ (C @ self.beta_hat_ - d)
-            beta_restricted = self.beta_hat_ - XTX_inv @ C.T @ lambda_
+            beta_res = self.beta_hat_ - XTX_inv @ C.T @ lambda_
+            
+            # 受限残差平方和
+            y_pred_res = self.X_b_ @ beta_res
+            rss_res = np.sum((self.y_ - y_pred_res) ** 2)
+            
+            # F统计量
+            q = C.shape[0]
+            df_res = self.n_ - (self.p_ + 1)
+            F_stat = ((rss_res - rss_unres) / q) / (rss_unres / df_res)
+            p_value = 1 - f.cdf(F_stat, q, df_res)
+            
+            return F_stat, p_value
         except np.linalg.LinAlgError:
             return np.nan, np.nan
-        
-        # 受限模型的残差平方和
-        y_pred_restricted = self.X_b_ @ beta_restricted
-        rss_restricted = np.sum((self.y_ - y_pred_restricted) ** 2)
-        
-        # F统计量
-        q = C.shape[0]
-        df_residual = self.n_ - (self.p_ + 1)
-        F_stat = ((rss_restricted - rss_unrestricted) / q) / (rss_unrestricted / df_residual)
-        p_value = 1 - f.cdf(F_stat, q, df_residual)
-        
-        return F_stat, p_value
