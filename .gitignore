@@ -24,3 +24,11 @@
 
 **/*.npz
 
+# Python 缓存文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VS Code 设置（可选）
+.vscode/
