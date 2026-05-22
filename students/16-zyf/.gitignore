@@ -2,19 +2,14 @@ __pycache__/
 *.pyc
 
 .venv/
-
-results/
-**/results/
-
-**/data/*.csv
-
 .vscode/
-# data
-src/week09/data/
 
 # results
 results/
+**/results/
+
+# data
+**/data/*.csv
 
 # generated files
-*.csv
 *.png
