@@ -1,1 +1,1 @@
-"""Utility package for regression-analysis homework."""
+"""Reusable utilities for regression analysis assignments."""

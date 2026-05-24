@@ -1,4 +1,4 @@
-"""Regression models reused from previous homework."""
+"""Small regression models maintained as a personal utility library."""
 from __future__ import annotations
 
 import numpy as np
@@ -7,7 +7,7 @@ import numpy as np
 class AnalyticalOLS:
     """Ordinary Least Squares solved by the normal equation.
 
-    This class does not add an intercept automatically. Add a column of ones
+    The class does not add an intercept automatically. Add a column of ones
     before fit/predict if an intercept is needed.
     """
 
@@ -43,7 +43,8 @@ class AnalyticalOLS:
 class GradientDescentOLS:
     """OLS solved by gradient descent.
 
-    The model keeps a transparent classroom-style interface and does not add an
+    The interface is intentionally simple: fit learns coefficients, predict uses
+    the learned coefficients, and score reports R^2. The class does not add an
     intercept internally.
     """
 

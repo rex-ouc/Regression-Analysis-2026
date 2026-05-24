@@ -1,4 +1,4 @@
-"""Hand-written regression metrics for Week 10."""
+"""Hand-written regression metrics reused in Week 11."""
 from __future__ import annotations
 
 import numpy as np
@@ -43,11 +43,7 @@ def calculate_mape(
     y_pred: np.ndarray | list[float],
     epsilon: float = 1e-8,
 ) -> float:
-    """Calculate Mean Absolute Percentage Error, returned as a percentage.
-
-    Rows whose true target is zero or extremely close to zero are removed from
-    the denominator. This avoids infinite or meaningless percentage errors.
-    """
+    """Calculate Mean Absolute Percentage Error, returned as a percentage."""
     if epsilon <= 0:
         raise ValueError("epsilon must be positive")
 
@@ -58,3 +54,15 @@ def calculate_mape(
 
     percentage_errors = np.abs((true[safe_mask] - pred[safe_mask]) / true[safe_mask])
     return float(np.mean(percentage_errors) * 100.0)
+
+
+def summarize_regression_metrics(
+    y_true: np.ndarray | list[float],
+    y_pred: np.ndarray | list[float],
+) -> dict[str, float]:
+    """Return a metric dictionary used by reports."""
+    return {
+        "RMSE": calculate_rmse(y_true, y_pred),
+        "MAE": calculate_mae(y_true, y_pred),
+        "MAPE": calculate_mape(y_true, y_pred),
+    }
