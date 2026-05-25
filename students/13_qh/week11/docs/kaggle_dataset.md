@@ -7,7 +7,7 @@
 ## 来源
 
 Kaggle 平台
-
+https://www.kaggle.com/datasets/grandmaster07/student-exam-performance-dataset-analysis
 ## 预测目标
 
 **Exam_Score**（考试成绩）— 连续变量，表示学生的最终考试分数
