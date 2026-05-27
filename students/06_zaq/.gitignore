@@ -1,0 +1,7 @@
+# 忽略 results 文件夹
+results/
+__pycache__/
+*.pyc
+.venv/
+data/
+*.csv

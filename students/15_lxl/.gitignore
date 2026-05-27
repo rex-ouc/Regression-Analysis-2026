@@ -1,1 +1,13 @@
 private/
+*.egg-info/
+__pycache__/
+*.pyc
+.venv/
+*.csv
+*.xlsx
+*.json
+data/
+results/
+*.jpg
+*.pdf
+src/week11/report/

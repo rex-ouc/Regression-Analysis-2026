@@ -34,3 +34,5 @@ __pycache__/
 .vscode/
 *.csv
 students/*/data/*.csv
+src/week05/
+src/week06/
