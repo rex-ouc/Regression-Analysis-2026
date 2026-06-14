@@ -1,11 +1,9 @@
 import sys
 from pathlib import Path
 
-# 路径修复 - 必须放在所有 src 导入之前
-project_root = Path(__file__).parent.parent.parent  # 需要回到项目根目录
+project_root = Path(__file__).parent.parent.parent  
 sys.path.insert(0, str(project_root))
 
-# 现在可以导入 src 模块
 import os
 import numpy as np
 import pandas as pd
@@ -15,11 +13,9 @@ from sklearn.decomposition import PCA
 from sklearn.linear_model import LassoCV
 from sklearn.metrics import r2_score
 
-# 修复中文显示问题
 plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'SimHei', 'WenQuanYi Micro Hei', 'Noto Sans CJK SC', 'Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False
 
-# 修复 src 导入
 from src.utils.models import CustomOLS, PCR, train_lasso_cv, ForwardSelector
 from src.utils.transformers import StandardScaler, generate_highdim_latent_data, generate_sparse_truth_data
 from src.utils.metrics import rmse, mae, r2
@@ -180,7 +176,7 @@ def task_a():
     plt.savefig(f"{FIG_DIR}/A4_coef_stability.png", dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 额外绘制：系数随时间变化的轨迹图
+    # 系数随时间变化的轨迹图
     plt.figure(figsize=(12, 5))
     for i in range(3):
         plt.plot(range(n_splits), coef_mat[:, i], marker='o', alpha=0.7, 
@@ -570,7 +566,6 @@ def task_c():
     plt.savefig(f"{FIG_DIR}/C2_lasso_vs_pcr_comparison.png", dpi=300)
     plt.close()
     
-    # 生成中文总结报告（使用实际运行的结果）
     summary_text = "# Lasso vs PCR 对比总结：特征选择 vs 信息压缩\n\n"
     summary_text += "## 实验设置\n\n"
     summary_text += f"- **样本量 n** = {n}\n"
