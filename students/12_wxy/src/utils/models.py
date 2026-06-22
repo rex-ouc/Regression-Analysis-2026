@@ -113,3 +113,74 @@ def train_lasso_cv(X_train, y_train, cv=5):
     lasso = LassoCV(cv=cv, random_state=42, max_iter=10000)
     lasso.fit(X_train, y_train)
     return lasso
+
+# ====================== 新增：逻辑回归相关（Week15 二分类） ======================
+import warnings
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV, KFold
+
+class CustomLogistic:
+    """简易自实现逻辑回归（可选，作业允许sklearn，这里做补充理解）"""
+    def __init__(self, lr=0.1, max_iter=8000, tol=1e-5):
+        self.lr = lr
+        self.max_iter = max_iter
+        self.tol = tol
+        self.coef_ = None
+        self.intercept_ = None
+
+    @staticmethod
+    def sigmoid(z):
+        return 1.0 / (1.0 + np.exp(-np.clip(z, -100, 100)))
+
+    def fit(self, X, y):
+        n, p = X.shape
+        X_bias = np.hstack([np.ones((n,1)), X])
+        w = np.zeros(p + 1)
+        for _ in range(self.max_iter):
+            z = X_bias @ w
+            p = self.sigmoid(z)
+            grad = X_bias.T @ (p - y) / n
+            w_new = w - self.lr * grad
+            if np.linalg.norm(w_new - w) < self.tol:
+                break
+            w = w_new
+        self.intercept_ = w[0]
+        self.coef_ = w[1:]
+
+    def predict_proba(self, X):
+        z = self.intercept_ + X @ self.coef_
+        prob1 = self.sigmoid(z)
+        prob0 = 1 - prob1
+        return np.column_stack([prob0, prob1])
+
+    def predict(self, X, threshold=0.5):
+        prob = self.predict_proba(X)[:,1]
+        return (prob >= threshold).astype(int)
+
+
+def train_logistic_base(X_train, y_train, penalty="l2", C=1.0):
+    """基础逻辑回归训练封装，屏蔽FutureWarning，兼容liblinear"""
+    # 屏蔽sklearn penalty废弃警告
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=FutureWarning, module="sklearn.linear_model._logistic")
+        lr = LogisticRegression(
+            penalty=penalty, 
+            C=C, 
+            max_iter=10000, 
+            random_state=42, 
+            solver="liblinear"
+        )
+        lr.fit(X_train, y_train)
+    return lr
+
+
+def cv_tune_logistic(X, y, penalty="l1", cv=5):
+    """网格搜索交叉验证选择最优正则强度C，兼容liblinear"""
+    kf = KFold(n_splits=cv, shuffle=True, random_state=42)
+    param_grid = {"C": [0.001, 0.01, 0.1, 1, 10, 100]}
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=FutureWarning, module="sklearn.linear_model._logistic")
+        model = LogisticRegression(penalty=penalty, solver="liblinear", max_iter=10000)
+        grid = GridSearchCV(model, param_grid, cv=kf, scoring="roc_auc")
+        grid.fit(X, y)
+    return grid.best_estimator_, grid.best_params_

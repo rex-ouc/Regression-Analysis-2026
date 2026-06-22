@@ -83,3 +83,73 @@ def plot_coef_path(coefs_list, feature_names=None, title="Coefficient Path"):
     
     plt.tight_layout()
     return plt.gcf()
+
+# ====================== 新增：二分类绘图 Week15 ======================
+plt.rcParams["font.sans-serif"] = ["SimHei"]
+plt.rcParams["axes.unicode_minus"] = False
+
+def plot_ols_vs_logistic_single_feature(x_arr, y_arr, ols_pred_arr, lr_prob_arr, save_path):
+    """Task A：单特征 OLS vs 逻辑回归输出对比图（输入全部为numpy数组）"""
+    fig, ax = plt.subplots(figsize=(10,6))
+    sort_idx = np.argsort(x_arr)
+    
+    ax.scatter(x_arr, y_arr, alpha=0.6, label="True Labels y ∈ {0,1}")
+    ax.plot(x_arr[sort_idx], ols_pred_arr[sort_idx], "r-", lw=2, label="OLS Linear Regression")
+    ax.plot(x_arr[sort_idx], lr_prob_arr[sort_idx], "g-", lw=2, label="Logistic Regression Sigmoid")
+    ax.set_xlabel("Feature Value")
+    ax.set_ylabel("Model Output")
+    ax.set_title("OLS vs Logistic Regression Output Comparison")
+    ax.legend()
+    ax.grid(alpha=0.3)
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+def plot_mse_logloss_curve(save_path):
+    """Task B：MSE与LogLoss损失对比曲线"""
+    p = np.linspace(0.01, 0.99, 300)
+    from src.utils.metrics import loss_curve_data
+    mse1, mse0, log1, log0 = loss_curve_data(p)
+    fig, ax = plt.subplots(figsize=(10,6))
+    ax.plot(p, mse1, "r--", label="MSE, True Label y=1")
+    ax.plot(p, log1, "r-", label="LogLoss, True Label y=1")
+    ax.plot(p, mse0, "b--", label="MSE, True Label y=0")
+    ax.plot(p, log0, "b-", label="LogLoss, True Label y=0")
+    ax.set_xlabel("Predicted Probability p")
+    ax.set_ylabel("Loss")
+    ax.set_title("MSE vs LogLoss Comparison")
+    ax.legend()
+    ax.grid(alpha=0.3)
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
+def plot_threshold_metric_tradeoff(df_scan, save_path):
+    """Task C：阈值变化下Acc/Precision/Recall/F1曲线"""
+    fig, ax = plt.subplots(figsize=(10,6))
+    ax.plot(df_scan["Threshold"], df_scan["Accuracy"], lw=2, label="Accuracy")
+    ax.plot(df_scan["Threshold"], df_scan["Precision"], lw=2, label="Precision")
+    ax.plot(df_scan["Threshold"], df_scan["Recall"], lw=2, label="Recall")
+    ax.plot(df_scan["Threshold"], df_scan["F1"], lw=2, label="F1 Score")
+    ax.set_xlabel("Threshold")
+    ax.set_ylabel("Metric Value")
+    ax.set_title("Precision / Recall / Accuracy / F1 Trade-off")
+    ax.legend()
+    ax.grid(alpha=0.3)
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
+def plot_l1_l2_coef_compare(l1_coefs, l2_coefs, save_path):
+    """Task D：L1/L2逻辑回归系数稀疏对比图"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    ax1.bar(range(len(l1_coefs)), l1_coefs, color="#2E86AB")
+    ax1.set_title("L1 Regularization Coefficients")  # 改为英文
+    ax1.set_xlabel("Feature Index")
+    ax1.set_ylabel("Coefficient Value")
+    ax2.bar(range(len(l2_coefs)), l2_coefs, color="#A23B72")
+    ax2.set_title("L2 Regularization Coefficients")
+    ax2.set_xlabel("Feature Index")
+    ax2.set_ylabel("Coefficient Value")
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=150)
+    plt.close()
